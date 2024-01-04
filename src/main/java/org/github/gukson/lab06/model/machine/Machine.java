@@ -1,5 +1,6 @@
 package org.github.gukson.lab06.model.machine;
 
+import com.google.gson.Gson;
 import org.github.gukson.lab06.model.Field;
 
 import java.io.*;
@@ -37,6 +38,8 @@ public class Machine {
 //        return resp;
 //    }
     public Field move(Integer id, String role, BufferedWriter out, Integer port) throws IOException {
+        Socket worldSocket = new Socket("localhost", 8080);
+        out = new BufferedWriter(new OutputStreamWriter(worldSocket.getOutputStream()));
         out.write(String.format("move %d %s", id,role));
         out.flush();
         System.out.println("wysłano zapytanie do serwera o move");
@@ -54,13 +57,9 @@ public class Machine {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return parser(response);
+        Gson gson = new Gson();
+
+        return gson.fromJson(response,Field.class);
     }
 
-    private Field parser(String response){
-        System.out.println(response);
-
-
-        return null;
-    }
 }
