@@ -49,7 +49,7 @@ public class World extends WorldHelper {
                         if (Objects.equals(role, "Harvester")) {
                             harvesters[id] = new Information(0, id, "down", Integer.parseInt(greeting.split(" ")[2]));
                         } else if (Objects.equals(role, "Seeder")) {
-                            seeders[id] = new Information(id, 0, "left", Integer.parseInt(greeting.split(" ")[2]));
+                            seeders[id] = new Information(id, 0, "right", Integer.parseInt(greeting.split(" ")[2]));
                         }
                     }
                     response(String.format("registration %d", id), responsePort);
@@ -68,7 +68,7 @@ public class World extends WorldHelper {
 
                     } else {
                         pos = newPosition(seeders[id],harvesters,seeders);
-                        responsePort = harvesters[id].getPort();
+                        responsePort = seeders[id].getPort();
                     }
 
                     //pos = x y
@@ -103,7 +103,7 @@ public class World extends WorldHelper {
         //generate Field
         for (int y = 0; y < 5; y++) {
             for (int x = 0; x < 5; x++) {
-                fieldArea[x][y] = new Field(100,y,x);
+                fieldArea[y][x] = new Field(100,y,x);
             }
         }
     }

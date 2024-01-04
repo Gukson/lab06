@@ -31,14 +31,14 @@ public class WorldHelper {
                 if (info.getX() == 0 && Objects.equals(info.getFacing(), "left")) {
                     info.setFacing("right");
                 } else if (isThisFieldEmpty(info.getX() - 1, info.getY(), harvesters, seeders)) {
-                    info.setY(info.getX() - 1);
+                    info.setX(info.getX() - 1);
                 }
                 break;
             case "right":
                 if (info.getX() == 4 && Objects.equals(info.getFacing(), "right")) {
                     info.setFacing("left");
                 } else if (isThisFieldEmpty(info.getX() + 1, info.getY(), harvesters, seeders)) {
-                    info.setY(info.getX() + 1);
+                    info.setX(info.getX() + 1);
                 }
                 break;
         }
