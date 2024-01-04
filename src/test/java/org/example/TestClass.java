@@ -2,7 +2,7 @@ package org.example;
 
 import java.io.IOException;
 
-import org.github.gukson.lab06.GreetClient;
+import org.github.gukson.lab06.socketexample.GreetClient;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

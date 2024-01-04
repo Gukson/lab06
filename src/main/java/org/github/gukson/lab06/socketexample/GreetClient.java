@@ -1,4 +1,4 @@
-package org.github.gukson.lab06;
+package org.github.gukson.lab06.socketexample;
 import java.net.*;
 import java.io.*;
 

@@ -1,4 +1,4 @@
-package org.github.gukson.lab06;
+package org.github.gukson.lab06.socketexample;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
