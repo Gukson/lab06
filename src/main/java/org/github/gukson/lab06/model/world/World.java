@@ -1,5 +1,6 @@
 package org.github.gukson.lab06.model.world;
 
+import com.google.gson.Gson;
 import org.github.gukson.lab06.model.Field;
 import org.github.gukson.lab06.model.Information;
 
@@ -31,18 +32,18 @@ public class World extends WorldHelper {
             clientSocket = serverSocket.accept();
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String greeting = in.readLine();
-
             System.out.println(greeting);
             String cmd = greeting.split(" ")[0];
             Integer id;
             String role;
+            int responsePort;
             switch (cmd) {
                 //register localhost 8081 Harvester
                 case "register":
                     // register, host, port, role
                     role = greeting.split(" ")[3];
                     id = rejestracja(role);
-                    int responsePort = Integer.parseInt(greeting.split(" ")[2]);
+                    responsePort = Integer.parseInt(greeting.split(" ")[2]);
 
                     if (id != -1) {
                         if (Objects.equals(role, "Harvester")) {
@@ -53,19 +54,29 @@ public class World extends WorldHelper {
                     }
                     response(String.format("registration %d", id), responsePort);
                     //move id rola
+                    break;
                 case "move":
+                    System.out.println("Przyszło zapytanie move");
+                    System.out.println(greeting);
                     id = Integer.parseInt(greeting.split(" ")[1]);
-                    role = greeting.split(" ")[2];
+                    role = greeting.split(" ")[2].strip();
                     Integer[] pos;
-                    if (role == "Harvester") {
+
+                    if (Objects.equals(role, "Harvester")) {
                         pos = newPosition(harvesters[id],harvesters,seeders);
+                        responsePort = harvesters[id].getPort();
+
                     } else {
                         pos = newPosition(seeders[id],harvesters,seeders);
+                        responsePort = harvesters[id].getPort();
                     }
 
-                    //get field from map
-                    //pack to json -> send back to machine
-
+                    //pos = x y
+                    Field responseField = fieldArea[pos[1]][pos[0]];
+                    Gson gson = new Gson();
+                    response(gson.toJson(responseField), responsePort);
+                    System.out.println("wysłano odpowiedź");
+                    break;
             }
         }
     }
@@ -90,9 +101,9 @@ public class World extends WorldHelper {
 
     private void setup() {
         //generate Field
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
-                fieldArea[x][y] = new Field(100);
+        for (int y = 0; y < 5; y++) {
+            for (int x = 0; x < 5; x++) {
+                fieldArea[x][y] = new Field(100,y,x);
             }
         }
     }

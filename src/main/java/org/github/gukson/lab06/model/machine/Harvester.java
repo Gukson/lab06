@@ -25,11 +25,11 @@ public class Harvester extends Machine {
         this.host = host;
         this.port = port;
         this.id = null;
-        try{
+        try {
             startConnection();
             registration();
 
-        }catch (IOException e2){
+        } catch (IOException e2) {
             System.out.println("=========");
             System.out.println(e2.getMessage());
         }
@@ -41,24 +41,32 @@ public class Harvester extends Machine {
     }
 
     private void registration() throws IOException {
-        String response = register(host,port,role,out);
+        String response = register(host, port, role, out);
         String[] resp = response.split(" ");
-        if (Objects.equals(resp[0], "registration") && Integer.parseInt(resp[1].strip()) != -1){
+        if (Objects.equals(resp[0], "registration") && Integer.parseInt(resp[1].strip()) != -1) {
             id = Integer.parseInt(resp[1]);
             work();
-        }
-        else {
+        } else {
             System.out.println("error");
         }
     }
 
     private void work() {
         System.out.println("working");
-        try{
-            TimeUnit.SECONDS.sleep(15);
-        }catch (InterruptedException e2){
-            e2.printStackTrace();
+        System.out.println(id);
+        System.out.println(role);
+        while (true){
+            try {
+                actualField = move(id, role, out, port);
+                System.out.println("Współrzędne pola: " +actualField.getX() + " " + actualField.getY());
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e2) {
+                e2.printStackTrace();
+            } catch (IOException e3) {
+                e3.printStackTrace();
+            }
         }
+
 
     }
 
