@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class Field {
     private Integer freeSpace;
     private Integer occupiedSpace;
-    private ArrayList<Plant> plants; //synchronized?
-    private ArrayList<Plant> seedsQueue;
+    private Plant[] plants; //synchronized?
+    private Plant seedsQueue;
     private Integer x,y;
 
 
@@ -17,18 +17,12 @@ public class Field {
         this.y = y;
         this.freeSpace = freeSpace;
         this.occupiedSpace = 0;
-        seedsQueue = new ArrayList<>();
-        plants = new ArrayList<>();
+        plants = new Plant[4];
     }
 
-//    public Field(String json){
-//
-//    }
-
-//    public void grow(){
-//
-//    }
-
+    public void setPlantInQueue(String name){
+        seedsQueue = new Plant(1,name);
+    }
 
     public Integer getFreeSpace() {
         return freeSpace;
@@ -38,19 +32,19 @@ public class Field {
         return occupiedSpace;
     }
 
-    public ArrayList<Plant> getPlants() {
-        return plants;
-    }
-
-    public ArrayList<Plant> getSeedsQueue() {
-        return seedsQueue;
-    }
-
     public Integer getX() {
         return x;
     }
 
     public Integer getY() {
         return y;
+    }
+
+    public Plant[] getPlants() {
+        return plants;
+    }
+
+    public Plant getSeedsQueue() {
+        return seedsQueue;
     }
 }

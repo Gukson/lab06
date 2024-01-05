@@ -28,7 +28,6 @@ public class Harvester extends Machine {
         try {
             startConnection();
             registration();
-
         } catch (IOException e2) {
             System.out.println("=========");
             System.out.println(e2.getMessage());
@@ -59,15 +58,12 @@ public class Harvester extends Machine {
             try {
                 actualField = move(id, role, out, port);
                 System.out.println("Współrzędne pola: " +actualField.getX() + " " + actualField.getY());
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e2) {
                 e2.printStackTrace();
             } catch (IOException e3) {
                 e3.printStackTrace();
             }
         }
-
-
     }
-
 }
