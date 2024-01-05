@@ -102,7 +102,7 @@ public class WorldGui extends JFrame {
             // Szukanie przycisku w siatce
             for (int i = 0; i < buttons.length; i++) {
                 for (int j = 0; j < buttons[i].length; j++) {
-                    if (buttons[i][j] == clickedButton) {
+                    if (buttons[j][i] == clickedButton) {
                         row = i;
                         col = j;
                         break;

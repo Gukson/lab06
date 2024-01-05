@@ -8,7 +8,7 @@ public class Field {
     private Integer freeSpace;
     private Integer occupiedSpace;
     private Plant[] plants; //synchronized?
-    private Plant seedsQueue;
+    private Plant[] seedsQueue;
     private Integer x,y;
 
 
@@ -17,11 +17,12 @@ public class Field {
         this.y = y;
         this.freeSpace = freeSpace;
         this.occupiedSpace = 0;
-        plants = new Plant[4];
+        this.plants = new Plant[4];
+        this.seedsQueue = new Plant[1];
     }
 
     public void setPlantInQueue(String name){
-        seedsQueue = new Plant(1,name);
+        seedsQueue[0] = new Plant(1,name);
     }
 
     public Integer getFreeSpace() {
@@ -44,7 +45,28 @@ public class Field {
         return plants;
     }
 
-    public Plant getSeedsQueue() {
+
+    public void setFreeSpace(Integer freeSpace) {
+        this.freeSpace = freeSpace;
+    }
+
+    public Plant[] getSeedsQueue() {
         return seedsQueue;
+    }
+
+    public void setOccupiedSpace(Integer occupiedSpace) {
+        this.occupiedSpace = occupiedSpace;
+    }
+
+    public void setPlants(Plant[] plants) {
+        this.plants = plants;
+    }
+
+    public void setX(Integer x) {
+        this.x = x;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
     }
 }
