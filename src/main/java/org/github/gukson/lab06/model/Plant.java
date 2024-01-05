@@ -16,4 +16,9 @@ public class Plant {
     public String getName() {
         return name;
     }
+    public void grow(){
+        if(age < 10){
+            age +=1;
+        }
+    }
 }
