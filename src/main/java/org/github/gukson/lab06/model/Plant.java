@@ -2,10 +2,18 @@ package org.github.gukson.lab06.model;
 
 public class Plant {
     private Integer age;
-    private Integer amount;
+    private String name;
 
-    public Plant(Integer age, Integer amount) {
+    public Plant(Integer age, String name) {
         this.age = age;
-        this.amount = amount;
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public String getName() {
+        return name;
     }
 }

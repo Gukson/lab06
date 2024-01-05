@@ -1,9 +1,11 @@
 package org.github.gukson.lab06.model.world;
 
 import com.google.gson.Gson;
+import org.github.gukson.lab06.gui.WorldGui;
 import org.github.gukson.lab06.model.Field;
 import org.github.gukson.lab06.model.Information;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,15 +19,20 @@ public class World extends WorldHelper {
     private Socket clientSocket, responseSocket;
     private BufferedWriter out;
     private BufferedReader in;
+    private JLabel[] harvestersLabels, seedersLabels;
+    private JPanel machinePanel;
 
     public void start(int port) throws IOException {
         harvesters = new Information[5];
+        harvestersLabels = new JLabel[5];
         seeders = new Information[5];
+        seedersLabels = new JLabel[5];
         fieldArea = new Field[5][5];
         setup();
-
+        WorldGui worldGui = new WorldGui(fieldArea);
+        machinePanel = worldGui.getMachinePanel();
+        worldGui.setVisible(true);
         serverSocket = new ServerSocket(port);
-
 
         while (true) {
             System.out.println("waiting");
@@ -48,8 +55,10 @@ public class World extends WorldHelper {
                     if (id != -1) {
                         if (Objects.equals(role, "Harvester")) {
                             harvesters[id] = new Information(0, id, "down", Integer.parseInt(greeting.split(" ")[2]));
+                            harvestersLabels[id] = worldGui.newHarvester(id);
                         } else if (Objects.equals(role, "Seeder")) {
                             seeders[id] = new Information(id, 0, "right", Integer.parseInt(greeting.split(" ")[2]));
+                            seedersLabels[id] = worldGui.newSeeder(id);
                         }
                     }
                     response(String.format("registration %d", id), responsePort);
@@ -63,11 +72,11 @@ public class World extends WorldHelper {
                     Integer[] pos;
 
                     if (Objects.equals(role, "Harvester")) {
-                        pos = newPosition(harvesters[id],harvesters,seeders);
+                        pos = newPosition(id, harvesters[id], harvesters, seeders, harvestersLabels, machinePanel);
                         responsePort = harvesters[id].getPort();
 
                     } else {
-                        pos = newPosition(seeders[id],harvesters,seeders);
+                        pos = newPosition(id, seeders[id], harvesters, seeders, seedersLabels, machinePanel);
                         responsePort = seeders[id].getPort();
                     }
 
@@ -103,7 +112,7 @@ public class World extends WorldHelper {
         //generate Field
         for (int y = 0; y < 5; y++) {
             for (int x = 0; x < 5; x++) {
-                fieldArea[y][x] = new Field(100,y,x);
+                fieldArea[y][x] = new Field(100, y, x);
             }
         }
     }
