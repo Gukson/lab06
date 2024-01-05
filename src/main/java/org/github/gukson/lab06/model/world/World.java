@@ -30,6 +30,10 @@ public class World extends WorldHelper {
         seedersLabels = new JLabel[5];
         fieldArea = new Field[5][5];
         setup();
+
+        Time time = new Time(fieldArea);
+        Thread timer = new Thread(time);
+        timer.start();
         WorldGui worldGui = new WorldGui(fieldArea);
         machinePanel = worldGui.getMachinePanel();
         worldGui.setVisible(true);
