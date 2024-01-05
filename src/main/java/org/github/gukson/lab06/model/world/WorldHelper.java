@@ -100,17 +100,17 @@ public class WorldHelper {
     public Boolean isThisFieldEmpty(Integer x, Integer y, Information[] harvesters, Information[] seeders) {
         for (int i = 0; i < 5; i++) {
             if (harvesters[i] != null && Objects.equals(harvesters[i].getX(), x) && Objects.equals(harvesters[i].getY(), y)) {
-                System.out.println("field not empty");
+//                System.out.println("field not empty");
                 return false;
             }
         }
         for (int i = 0; i < 5; i++) {
             if (seeders[i] != null && Objects.equals(seeders[i].getX(), x) && Objects.equals(seeders[i].getY(), y)) {
-                System.out.println("field not empty");
+//                System.out.println("field not empty");
                 return false;
             }
         }
-        System.out.println("field is empty");
+//        System.out.println("field is empty");
         return true;
     }
 
@@ -121,7 +121,7 @@ public class WorldHelper {
             responseWriter.write(response);
             responseWriter.flush();
             responseSocket.close();
-            System.out.println(" " + String.format("Wysłano do klienta na porcie: %d odpowedź %s", responsePort, response));
+//            S
 
         } catch (IOException e) {
             e.printStackTrace();

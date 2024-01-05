@@ -45,8 +45,9 @@ public class FieldInfoGUI extends JFrame {
         addNewPlantButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (field.getSeedsQueue() == null) {
+                if (field.getSeedsQueue()[0] == null) {
                     field.setPlantInQueue((String) comboBox.getSelectedItem());
+                    System.out.println(field.getSeedsQueue()[0]);
                     refreshPlantsData();
                 }
             }
@@ -83,11 +84,11 @@ public class FieldInfoGUI extends JFrame {
                 }
             }
 
-            if(field.getSeedsQueue() == null){
+            if(field.getSeedsQueue()[0] == null){
                 waitingPlantLabel.setIcon(new ImageIcon("./src/main/resources/data/empty_quater.png"));
             }
             else {
-                switch (field.getSeedsQueue().getName()){
+                switch (field.getSeedsQueue()[0].getName()){
                     case "carrot":
                         waitingPlantLabel.setIcon(new ImageIcon("./src/main/resources/data/carrot.png"));
                         break;

@@ -12,7 +12,7 @@ public class Machine {
     public String register(String host, int port, String role, BufferedWriter out) throws IOException {
         out.write(String.format("register %s %d %s", host,port,role));
         out.flush();
-        System.out.println("wysłano zapytanie do serwera o rejestrację");
+//        System.out.println("wysłano zapytanie do serwera o rejestrację");
         out.close();
 
         String response = "";
@@ -22,7 +22,7 @@ public class Machine {
 
             // Odczyt odpowiedzi od serwera
             response = responseReader.readLine();
-            System.out.printf("Odebrano odpowiedź od serwera na porcie %d : %s%n", port,response);
+//            System.out.printf("Odebrano odpowiedź od serwera na porcie %d : %s%n", port,response);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,7 +42,7 @@ public class Machine {
         out = new BufferedWriter(new OutputStreamWriter(worldSocket.getOutputStream()));
         out.write(String.format("move %d %s", id,role));
         out.flush();
-        System.out.println("wysłano zapytanie do serwera o move");
+//        System.out.println("wysłano zapytanie do serwera o move");
         out.close();
 
         String response = "";
@@ -52,13 +52,12 @@ public class Machine {
 
             // Odczyt odpowiedzi od serwera
             response = responseReader.readLine();
-            System.out.printf("Odebrano odpowiedź od serwera na porcie %d : %s%n", port,response);
+//            System.out.printf("Odebrano odpowiedź od serwera na porcie %d : %s%n", port,response);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         Gson gson = new Gson();
-
         return gson.fromJson(response,Field.class);
     }
 

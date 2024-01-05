@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.github.gukson.lab06.gui.WorldGui;
 import org.github.gukson.lab06.model.Field;
 import org.github.gukson.lab06.model.Information;
+import org.github.gukson.lab06.model.Plant;
 
 import javax.swing.*;
 import java.io.*;
@@ -39,7 +40,7 @@ public class World extends WorldHelper {
             clientSocket = serverSocket.accept();
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String greeting = in.readLine();
-            System.out.println(greeting);
+//            System.out.println(greeting);
             String cmd = greeting.split(" ")[0];
             Integer id;
             String role;
@@ -65,8 +66,8 @@ public class World extends WorldHelper {
                     //move id rola
                     break;
                 case "move":
-                    System.out.println("Przyszło zapytanie move");
-                    System.out.println(greeting);
+//                    System.out.println("Przyszło zapytanie move");
+//                    System.out.println(greeting);
                     id = Integer.parseInt(greeting.split(" ")[1]);
                     role = greeting.split(" ")[2].strip();
                     Integer[] pos;
@@ -84,8 +85,35 @@ public class World extends WorldHelper {
                     Field responseField = fieldArea[pos[1]][pos[0]];
                     Gson gson = new Gson();
                     response(gson.toJson(responseField), responsePort);
-                    System.out.println("wysłano odpowiedź");
+//                    System.out.println("wysłano odpowiedź");
                     break;
+                //seed y x id
+                case "seed":
+                    System.out.println("otrzymano request o zasianie");
+                    int y = Integer.parseInt(greeting.split(" ")[1]);
+                    int x = Integer.parseInt(greeting.split(" ")[2]);
+                    int fieldID = Integer.parseInt(greeting.split(" ")[3]);
+                    id = Integer.parseInt(greeting.split(" ")[4]);
+
+                    Field requestedField = fieldArea[y][x];
+                    if(requestedField.getSeedsQueue()[0] != null){
+                        System.out.println("Rzecyzwiście jest coś do zasiania");
+                        if (requestedField.getPlants()[fieldID] == null){
+                            System.out.println("wskazane pole jest puste");
+                            requestedField.getPlants()[fieldID] = new Plant(1,requestedField.getSeedsQueue()[0].getName());
+                            System.out.println("zasiano wskazaną roślinę");
+                            requestedField.getSeedsQueue()[0] = null;
+                            System.out.println("usunięto roślinę z kolejki");
+                            response("seed Success",seeders[id].getPort());
+                        }
+                        else {
+                            response("seed Failed",seeders[id].getPort());
+                        }
+                    }
+                    else {
+                        response("seed Failed",seeders[id].getPort());
+                    }
+
             }
         }
     }
