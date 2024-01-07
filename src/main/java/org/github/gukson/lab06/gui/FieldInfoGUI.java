@@ -35,7 +35,7 @@ public class FieldInfoGUI extends JFrame {
         refreshPlantsData();
 
         comboBox = new JComboBox();
-        comboBox.setModel(new DefaultComboBoxModel(new String[]{"carrot", "potato", "salad", "tomato"}));
+        comboBox.setModel(new DefaultComboBoxModel(new String[]{"carrot", "potato", "cabbage", "tomato"}));
         comboBox.setBounds(281, 26, 89, 27);
         contentPane.add(comboBox);
 
@@ -75,7 +75,7 @@ public class FieldInfoGUI extends JFrame {
                     case "potato":
                         quaters[x].setIcon(new ImageIcon("./src/main/resources/data/potato.png"));
                         break;
-                    case "salad":
+                    case "cabbage":
                         quaters[x].setIcon(new ImageIcon("./src/main/resources/data/cabbage.png"));
                         break;
                     case "tomato":
@@ -95,7 +95,7 @@ public class FieldInfoGUI extends JFrame {
                     case "potato":
                         waitingPlantLabel.setIcon(new ImageIcon("./src/main/resources/data/potato.png"));
                         break;
-                    case "salad":
+                    case "cabbage":
                         waitingPlantLabel.setIcon(new ImageIcon("./src/main/resources/data/cabbage.png"));
                         break;
                     case "tomato":
@@ -111,17 +111,17 @@ public class FieldInfoGUI extends JFrame {
         for (int x = 0; x < 4; x++) {
             quaters[x] = new JLabel();
             quaters[x].setIcon(new ImageIcon("./src/main/resources/data/empty_quater.png"));
-            quaters[x].setBounds(26 + x * 50, 90, 40, 40);
+            quaters[x].setBounds(26 + x * 55, 90, 45, 40);
             contentPane.add(quaters[x]);
 
 
             ages[x] = new JLabel();
-            ages[x].setBounds(26 + x * 50, 130, 40, 15);
+            ages[x].setBounds(20 + x * 55, 130, 50, 15);
             ages[x].setHorizontalAlignment(SwingConstants.CENTER);
             contentPane.add(ages[x]);
 
             numbs[x] = new JLabel(String.valueOf(x + 1));
-            numbs[x].setBounds(26 + x * 50, 75, 40, 15);
+            numbs[x].setBounds(20 + x * 55, 75, 50, 15);
             numbs[x].setHorizontalAlignment(SwingConstants.CENTER);
             contentPane.add(numbs[x]);
 
