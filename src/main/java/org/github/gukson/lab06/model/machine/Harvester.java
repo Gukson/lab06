@@ -51,14 +51,13 @@ public class Harvester extends Machine {
     }
 
     private void work() {
-        System.out.println("working");
-        System.out.println(id);
-        System.out.println(role);
+
         while (true){
             try {
                 actualField = move(id, role, out, port);
                 System.out.println("Współrzędne pola: " +actualField.getX() + " " + actualField.getY());
-                TimeUnit.SECONDS.sleep(2);
+                tryToHarvest();
+                TimeUnit.MILLISECONDS.sleep(350);
             } catch (InterruptedException e2) {
                 e2.printStackTrace();
             } catch (IOException e3) {
@@ -66,4 +65,44 @@ public class Harvester extends Machine {
             }
         }
     }
+
+    private void tryToHarvest() {
+        String response;
+        for (int id = 0; id < actualField.getPlants().length; id++) {
+            if (actualField.getPlants()[id] != null &&  actualField.getPlants()[id].getAge() == 10) {
+                try {
+                    System.out.println("Wysłano request o ścięcie");
+                    response = harvestRequest(actualField.getY(), actualField.getX(), id);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                if (Objects.equals(response, "harvest Failed")){
+                    System.out.println("Coś poszło nie tak podczas siania");
+                    //TODO Czy maszyna ma coś zrobić, jeżeli wysłano by Failed?
+                }
+                break;
+            }
+        }
+    }
+
+    private String harvestRequest(Integer y, Integer x, Integer fieldID) throws IOException {
+        Socket worldSocket = new Socket("localhost", 8080);
+        out = new BufferedWriter(new OutputStreamWriter(worldSocket.getOutputStream()));
+        out.write(String.format("harvest %d %d %d %d", y, x, fieldID, id));
+        out.flush();
+        out.close();
+
+        String response = "";
+        try (ServerSocket responseServerSocket = new ServerSocket(port);
+             Socket responseSocket = responseServerSocket.accept();
+             BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseSocket.getInputStream()))) {
+
+            // Odczyt odpowiedzi od serwera
+            response = responseReader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
 }

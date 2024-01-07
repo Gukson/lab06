@@ -4,14 +4,13 @@ import org.github.gukson.lab06.model.Field;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.EventQueue;
+import java.awt.*;
 
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,11 +18,13 @@ public class WorldGui extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane, machinePanel, panel;
     private JButton[][] buttons;
+    private FieldView[][] fieldlabels;
     private Field[][] fields;
 
     public WorldGui(Field[][] fields) {
         this.fields = fields;
         this.buttons = new JButton[5][5];
+        this.fieldlabels = new FieldView[5][5];
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 700, 600);
         setResizable(false);
@@ -52,10 +53,34 @@ public class WorldGui extends JFrame {
     private JButton generateFieldButton() {
         for (int y = 0; y < 5; y++) {
             for (int x = 0; x < 5; x++) {
-                JButton temp = new JButton("(" + y + "," + x + ")");
-                temp.addActionListener(new ButtonClickListener());
-                panel.add(temp);
-                buttons[y][x] = temp;
+                JPanel tempPanel = new JPanel();
+                tempPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+                JLabel temp1 = new JLabel();
+                temp1.setSize(50,50);
+                temp1.setIcon(new ImageIcon("./src/main/resources/data/emptyfield.png"));
+                JLabel temp2 = new JLabel();
+                temp2.setIcon(new ImageIcon("./src/main/resources/data/emptyfield.png"));
+                temp2.setSize(50,50);
+                JLabel temp3 = new JLabel();
+                temp3.setSize(50,50);
+                temp3.setIcon(new ImageIcon("./src/main/resources/data/emptyfield.png"));
+                JLabel temp4 = new JLabel();
+                temp4.setSize(50,50);
+                temp4.setIcon(new ImageIcon("./src/main/resources/data/emptyfield.png"));
+                tempPanel.add(temp1);
+                tempPanel.add(temp2);
+                tempPanel.add(temp3);
+                tempPanel.add(temp4);
+                fieldlabels[y][x] = new FieldView(temp1,temp2,temp3,temp4);
+
+                JButton tempButton = new JButton();
+//                tempButton.setSize(100,100);
+                System.out.println(tempButton.getSize());
+                tempButton.add(tempPanel);
+
+                tempButton.addActionListener(new ButtonClickListener());
+                panel.add(tempButton);
+                buttons[y][x] = tempButton;
             }
         }
         return null;
@@ -116,4 +141,10 @@ public class WorldGui extends JFrame {
             }
         }
     }
+
+    public FieldView[][] getFieldlabels() {
+        return fieldlabels;
+    }
+
+
 }

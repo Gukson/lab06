@@ -31,10 +31,11 @@ public class World extends WorldHelper {
         fieldArea = new Field[5][5];
         setup();
 
-        Time time = new Time(fieldArea);
+
+        WorldGui worldGui = new WorldGui(fieldArea);
+        Time time = new Time(fieldArea, worldGui.getFieldlabels(), worldGui.getContentPane());
         Thread timer = new Thread(time);
         timer.start();
-        WorldGui worldGui = new WorldGui(fieldArea);
         machinePanel = worldGui.getMachinePanel();
         worldGui.setVisible(true);
         serverSocket = new ServerSocket(port);
@@ -49,6 +50,8 @@ public class World extends WorldHelper {
             Integer id;
             String role;
             int responsePort;
+            int x,y,fieldID;
+            Field requestedField;
             switch (cmd) {
                 //register localhost 8081 Harvester
                 case "register":
@@ -94,12 +97,12 @@ public class World extends WorldHelper {
                 //seed y x id
                 case "seed":
                     System.out.println("otrzymano request o zasianie");
-                    int y = Integer.parseInt(greeting.split(" ")[1]);
-                    int x = Integer.parseInt(greeting.split(" ")[2]);
-                    int fieldID = Integer.parseInt(greeting.split(" ")[3]);
+                    y = Integer.parseInt(greeting.split(" ")[1]);
+                    x = Integer.parseInt(greeting.split(" ")[2]);
+                    fieldID = Integer.parseInt(greeting.split(" ")[3]);
                     id = Integer.parseInt(greeting.split(" ")[4]);
 
-                    Field requestedField = fieldArea[y][x];
+                    requestedField = fieldArea[y][x];
                     if(requestedField.getSeedsQueue()[0] != null){
                         System.out.println("Rzecyzwiście jest coś do zasiania");
                         if (requestedField.getPlants()[fieldID] == null){
@@ -117,7 +120,24 @@ public class World extends WorldHelper {
                     else {
                         response("seed Failed",seeders[id].getPort());
                     }
+                    break;
+                case "harvest":
+                    System.out.println("otrzymano request o ścięcie");
+                    y = Integer.parseInt(greeting.split(" ")[1]);
+                    x = Integer.parseInt(greeting.split(" ")[2]);
+                    fieldID = Integer.parseInt(greeting.split(" ")[3]);
+                    id = Integer.parseInt(greeting.split(" ")[4]);
 
+                    requestedField = fieldArea[y][x];
+
+                    if(requestedField.getPlants()[fieldID] != null && requestedField.getPlants()[fieldID].getAge() == 10){
+                        requestedField.getPlants()[fieldID] = null;
+                        worldGui.getFieldlabels()[y][x].getLabels()[fieldID].setIcon(new ImageIcon("./src/main/resources/data/emptyfield.png"));
+                        response("harvest Success",harvesters[id].getPort());
+                    }
+                    else {
+                        response("harvest Failed",harvesters[id].getPort());
+                    }
             }
         }
     }
