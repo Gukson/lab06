@@ -7,22 +7,23 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class WorldHelper {
 
-    public Integer[] newPosition(int id, Information info, Information[] harvesters, Information[] seeders, JLabel[] labels, JPanel machinePane) {
+    public Integer[] newPosition(int id, Information info, List<Information> harvesters, List<Information> seeders, List<JLabel> labels, JPanel machinePane) {
         System.out.println(info.getFacing());
         switch (info.getFacing()) {
             case "up":
                 if (info.getY() == 0 && Objects.equals(info.getFacing(), "up")) {
                     info.setFacing("down");
-                    labels[id].setIcon(new ImageIcon("./src/main/resources/data/harvester-down.png"));
+                    labels.get(id).setIcon(new ImageIcon("./src/main/resources/data/harvester-down.png"));
                 } else if (isThisFieldEmpty(info.getX(), info.getY() - 1, harvesters, seeders)) {
                     info.setY(info.getY() - 1);
                     for (int x = 0; x < 50; x += 1) {
-                        labels[id].setLocation(labels[id].getX(), labels[id].getY() - 2);
+                        labels.get(id).setLocation(labels.get(id).getX(), labels.get(id).getY() - 2);
                         machinePane.repaint();
                         machinePane.revalidate();
                         try {
@@ -36,11 +37,11 @@ public class WorldHelper {
             case "down":
                 if (info.getY() == 4 && Objects.equals(info.getFacing(), "down")) {
                     info.setFacing("up");
-                    labels[id].setIcon(new ImageIcon("./src/main/resources/data/harvester-up.png"));
+                    labels.get(id).setIcon(new ImageIcon("./src/main/resources/data/harvester-up.png"));
                 } else if (isThisFieldEmpty(info.getX(), info.getY() + 1, harvesters, seeders)) {
                     info.setY(info.getY() + 1);
                     for (int x = 0; x < 50; x++) {
-                        labels[id].setLocation(labels[id].getX(), labels[id].getY() + 2);
+                        labels.get(id).setLocation(labels.get(id).getX(), labels.get(id).getY() + 2);
                         machinePane.repaint();
                         machinePane.revalidate();
                         try {
@@ -54,11 +55,11 @@ public class WorldHelper {
             case "left":
                 if (info.getX() == 0 && Objects.equals(info.getFacing(), "left")) {
                     info.setFacing("right");
-                    labels[id].setIcon(new ImageIcon("./src/main/resources/data/seeder-right.png"));
+                    labels.get(id).setIcon(new ImageIcon("./src/main/resources/data/seeder-right.png"));
                 } else if (isThisFieldEmpty(info.getX() - 1, info.getY(), harvesters, seeders)) {
                     info.setX(info.getX() - 1);
                     for (int x = 0; x < 50; x++) {
-                        labels[id].setLocation(labels[id].getX() - 2, labels[id].getY());
+                        labels.get(id).setLocation(labels.get(id).getX() - 2, labels.get(id).getY());
                         machinePane.repaint();
                         machinePane.revalidate();
                         try {
@@ -72,11 +73,11 @@ public class WorldHelper {
             case "right":
                 if (info.getX() == 4 && Objects.equals(info.getFacing(), "right")) {
                     info.setFacing("left");
-                    labels[id].setIcon(new ImageIcon("./src/main/resources/data/seeder-left.png"));
+                    labels.get(id).setIcon(new ImageIcon("./src/main/resources/data/seeder-left.png"));
                 } else if (isThisFieldEmpty(info.getX() + 1, info.getY(), harvesters, seeders)) {
                     info.setX(info.getX() + 1);
                     for (int x = 0; x < 50; x++) {
-                        labels[id].setLocation(labels[id].getX() + 2, labels[id].getY());
+                        labels.get(id).setLocation(labels.get(id).getX() + 2, labels.get(id).getY());
                         machinePane.repaint();
                         machinePane.revalidate();
                         try {
@@ -97,20 +98,17 @@ public class WorldHelper {
 
     }
 
-    public Boolean isThisFieldEmpty(Integer x, Integer y, Information[] harvesters, Information[] seeders) {
+    public Boolean isThisFieldEmpty(Integer x, Integer y, List<Information> harvesters, List<Information> seeders) {
         for (int i = 0; i < 5; i++) {
-            if (harvesters[i] != null && Objects.equals(harvesters[i].getX(), x) && Objects.equals(harvesters[i].getY(), y)) {
-//                System.out.println("field not empty");
+            if (harvesters.get(i) != null && Objects.equals(harvesters.get(i).getX(), x) && Objects.equals(harvesters.get(i).getY(), y)) {
                 return false;
             }
         }
         for (int i = 0; i < 5; i++) {
-            if (seeders[i] != null && Objects.equals(seeders[i].getX(), x) && Objects.equals(seeders[i].getY(), y)) {
-//                System.out.println("field not empty");
+            if (seeders.get(i) != null && Objects.equals(seeders.get(i).getX(), x) && Objects.equals(seeders.get(i).getY(), y)) {
                 return false;
             }
         }
-//        System.out.println("field is empty");
         return true;
     }
 
@@ -120,8 +118,6 @@ public class WorldHelper {
 
             responseWriter.write(response);
             responseWriter.flush();
-            responseSocket.close();
-//            S
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -61,6 +61,7 @@ public class Seeder extends Machine {
                 actualField = move(id, role, out, port);
                 tryToSeed();
                 System.out.println("Współrzędne pola: " + actualField.getX() + " " + actualField.getY());
+                System.out.println();
                 TimeUnit.MILLISECONDS.sleep(350);
             } catch (InterruptedException e2) {
                 e2.printStackTrace();
