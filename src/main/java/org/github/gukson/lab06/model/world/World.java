@@ -43,14 +43,12 @@ public class World extends WorldHelper {
         serverSocket = new ServerSocket(port);
 
         while (true) {
-            System.out.println("waiting");
             clientSocket = serverSocket.accept();
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String greeting = in.readLine();
             WorldThread worldThread = new WorldThread(greeting,harvesters,seeders,harvestersLabels,seedersLabels,worldGui,fieldArea, machinePanel);
             Thread thread = new Thread(worldThread);
             thread.start();
-//            System.out.println(greeting);
 
         }
     }

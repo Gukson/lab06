@@ -13,9 +13,9 @@ import java.util.Objects;
 public class WorldThread extends WorldHelper implements Runnable{
 
     private String greeting;
+    private WorldGui worldGui;
     private List<Information> harvesters, seeders;
     private List<JLabel> harvestersLabels, seedersLabels;
-    private WorldGui worldGui;
     private Field[][] fieldArea;
     private JPanel machinePanel;
 
@@ -30,13 +30,24 @@ public class WorldThread extends WorldHelper implements Runnable{
         this.machinePanel = machinePanel;
     }
 
-    private Integer rejestracja(String role) {
+    private Integer rejestracja(String role, int port) {
         //Sprawdzanie, czy port nie jest juz zajęty
+
+        for (int i = 0; i < harvesters.size(); i++) {
+            if (harvesters.get(i) != null && harvesters.get(i).getPort() == port) {
+                return -2;
+            }
+            if (seeders.get(i) != null && seeders.get(i).getPort() == port) {
+                return -2;
+            }
+        }
+
         if (Objects.equals(role, "Harvester")) {
             for (int i = 0; i < harvesters.size(); i++) {
                 if (harvesters.get(i) == null) {
                     return i;
                 }
+
             }
         } else {
             for (int i = 0; i < seeders.size(); i++) {
@@ -62,10 +73,12 @@ public class WorldThread extends WorldHelper implements Runnable{
             case "register":
                 // register, host, port, role
                 role = greeting.split(" ")[3];
-                id = rejestracja(role);
-                responsePort = Integer.parseInt(greeting.split(" ")[2]);
 
-                if (id != -1) {
+                responsePort = Integer.parseInt(greeting.split(" ")[2]);
+                id = rejestracja(role, responsePort);
+                System.out.println(id);
+
+                if (id != -1 && id != -2) {
                     if (Objects.equals(role, "Harvester")) {
                         harvesters.set(id,new Information(0, id, "down", Integer.parseInt(greeting.split(" ")[2])));
                         harvestersLabels.set(id,worldGui.newHarvester(id));
@@ -78,8 +91,6 @@ public class WorldThread extends WorldHelper implements Runnable{
                 //move id rola
                 break;
             case "move":
-//                    System.out.println("Przyszło zapytanie move");
-//                    System.out.println(greeting);
                 id = Integer.parseInt(greeting.split(" ")[1]);
                 role = greeting.split(" ")[2].strip();
                 Integer[] pos;
@@ -97,11 +108,9 @@ public class WorldThread extends WorldHelper implements Runnable{
                 Field responseField = fieldArea[pos[1]][pos[0]];
                 Gson gson = new Gson();
                 response(gson.toJson(responseField), responsePort);
-//                    System.out.println("wysłano odpowiedź");
                 break;
             //seed y x id
             case "seed":
-                System.out.println("otrzymano request o zasianie");
                 y = Integer.parseInt(greeting.split(" ")[1]);
                 x = Integer.parseInt(greeting.split(" ")[2]);
                 fieldID = Integer.parseInt(greeting.split(" ")[3]);
@@ -109,13 +118,9 @@ public class WorldThread extends WorldHelper implements Runnable{
 
                 requestedField = fieldArea[y][x];
                 if(requestedField.getSeedsQueue()[0] != null){
-                    System.out.println("Rzecyzwiście jest coś do zasiania");
                     if (requestedField.getPlants()[fieldID] == null){
-                        System.out.println("wskazane pole jest puste");
                         requestedField.getPlants()[fieldID] = new Plant(1,requestedField.getSeedsQueue()[0].getName());
-                        System.out.println("zasiano wskazaną roślinę");
                         requestedField.getSeedsQueue()[0] = null;
-                        System.out.println("usunięto roślinę z kolejki");
                         response("seed Success",seeders.get(id).getPort());
                     }
                     else {
@@ -127,7 +132,6 @@ public class WorldThread extends WorldHelper implements Runnable{
                 }
                 break;
             case "harvest":
-                System.out.println("otrzymano request o ścięcie");
                 y = Integer.parseInt(greeting.split(" ")[1]);
                 x = Integer.parseInt(greeting.split(" ")[2]);
                 fieldID = Integer.parseInt(greeting.split(" ")[3]);
@@ -145,6 +149,27 @@ public class WorldThread extends WorldHelper implements Runnable{
                 else {
                     response("harvest Failed",harvesters.get(id).getPort());
                 }
+            case "unregister":
+                id = Integer.parseInt(greeting.split(" ")[1]);
+                role = greeting.split(" ")[2].strip();
+                int port;
+                if (role.equals("Harvester")){
+                    port =harvesters.get(id).getPort();
+                    harvesters.set(id,null);
+                    JLabel temp = harvestersLabels.get(id);
+                    machinePanel.remove(temp);
+                    harvestersLabels.set(id,null);
+                }else{
+                    port =seeders.get(id).getPort();
+                    seeders.set(id,null);
+                    JLabel temp = seedersLabels.get(id);
+                    machinePanel.remove(temp);
+                    seedersLabels.set(id,null);
+                }
+                machinePanel.repaint();
+                machinePanel.revalidate();
+                response("unregister Success", port);
+
         }
         Thread.currentThread().interrupt();
     }

@@ -1,8 +1,10 @@
-package org.github.gukson.lab06.model.machine;
+package org.github.gukson.lab06.model.machine.seeder;
 
 import org.github.gukson.lab06.model.Field;
+import org.github.gukson.lab06.model.machine.Machine;
 
 import javax.sound.midi.Soundbank;
+import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,47 +23,56 @@ public class Seeder extends Machine {
     private int port;
     private Integer id;
     private Field actualField;
+    private SeederGUI seederGUI;
+    private Boolean keepSeeding;
 
-    public Seeder(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public Seeder() {
+        this.host = "localhost";
         this.id = null;
-        try {
-            startConnection();
-            registration();
-
-        } catch (IOException e2) {
-            System.out.println("=========");
-            System.out.println(e2.getMessage());
-        }
+        seederGUI = new SeederGUI(this);
+        seederGUI.setVisible(true);
     }
 
-    private void startConnection() throws IOException {
-        this.worldSocket = new Socket("localhost", 8080);
-        this.out = new BufferedWriter(new OutputStreamWriter(worldSocket.getOutputStream()));
-    }
 
-    private void registration() throws IOException {
+    public void registration() throws IOException {
+        Socket worldSocket = new Socket("localhost", 8080);
+        out = new BufferedWriter(new OutputStreamWriter(worldSocket.getOutputStream()));
         String response = register(host, port, role, out);
         String[] resp = response.split(" ");
-        if (Objects.equals(resp[0], "registration") && Integer.parseInt(resp[1].strip()) != -1) {
+        if (Objects.equals(resp[0], "registration") && Integer.parseInt(resp[1].strip()) != -1 && Integer.parseInt(resp[1].strip()) != -2) {
             id = Integer.parseInt(resp[1]);
-            work();
+            SeederInBack seeder = new SeederInBack();
+            seeder.execute();
+        }else if(Integer.parseInt(resp[1].strip()) == -2){
+            seederGUI.portUsed();
         } else {
             System.out.println("error");
         }
     }
 
+    public void unregistration() throws IOException{
+        Socket worldSocket = new Socket("localhost", 8080);
+        out = new BufferedWriter(new OutputStreamWriter(worldSocket.getOutputStream()));
+        String response = unregister(id, port, out, role);
+        String[] resp = response.split(" ");
+        if (Objects.equals(resp[1], "Success")){
+            System.out.println("Wyrejestrowano");
+            out.close();
+            in.close();
+        }
+    }
+
     private void work() {
-//        System.out.println("working");
-//        System.out.println(id);
-//        System.out.println(role);
         while (true) {
             try {
                 actualField = move(id, role, out, port);
-                tryToSeed();
+                seederGUI.updateInfo(actualField);
                 System.out.println("Współrzędne pola: " + actualField.getX() + " " + actualField.getY());
-                System.out.println();
+                tryToSeed();
+                if(!keepSeeding){
+                    unregistration();
+                    break;
+                }
                 TimeUnit.MILLISECONDS.sleep(350);
             } catch (InterruptedException e2) {
                 e2.printStackTrace();
@@ -113,6 +124,23 @@ public class Seeder extends Machine {
             e.printStackTrace();
         }
         return response;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setKeepSeeding(Boolean keepSeeding) {
+        this.keepSeeding = keepSeeding;
+    }
+
+    private class SeederInBack extends SwingWorker<Void, Void> {
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            work();
+            return null;
+        }
     }
 
 }
