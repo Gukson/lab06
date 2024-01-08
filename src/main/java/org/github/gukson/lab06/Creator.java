@@ -1,7 +1,7 @@
 package org.github.gukson.lab06;
 
-import org.github.gukson.lab06.model.machine.Harvester;
-import org.github.gukson.lab06.model.machine.Seeder;
+import org.github.gukson.lab06.model.machine.harvester.Harvester;
+import org.github.gukson.lab06.model.machine.seeder.Seeder;
 import org.github.gukson.lab06.model.world.World;
 
 import java.io.IOException;
@@ -14,25 +14,16 @@ public class Creator {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Podaj jaki obiekt chcesz zarejestrować? World / Seeder / Harvester");
         String obiekt = scanner.nextLine();
-        String port;
         switch (obiekt){
             case "World":
                 World world = new World();
                 world.start(8080);
                 break;
             case "Harvester":
-                System.out.println("Podaj numer portu");
-                port = scanner.nextLine();
-                if(isPortAvailable(Integer.parseInt(port))){
-                    new Harvester("localhost", Integer.parseInt(port));
-                }
+                new Harvester();
                 break;
             case "Seeder":
-                System.out.println("Podaj numer portu");
-                port = scanner.nextLine();
-                if(isPortAvailable(Integer.parseInt(port))){
-                    new Seeder("localhost", Integer.parseInt(port));
-                }
+                new Seeder();
                 break;
         }
         scanner.close();
